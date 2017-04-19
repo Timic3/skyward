@@ -3,9 +3,11 @@ package com.timic.skywardgame.screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -36,7 +38,7 @@ public class RegisterScreen extends ScreenBase {
 		table.align(Align.top);
 		stage.addActor(table);
 		
-		final Label lTitle = new Label("Skyward", this.skin);
+		final Image iTitle = new Image(new Texture(Gdx.files.internal("data/images/skyward.png")));
 		final Label lUsername = new Label("Username", this.skin);
 		final Label lPassword = new Label("Password", this.skin);
 		final Label lConfirmPassword = new Label("Confirm Password", this.skin);
@@ -49,7 +51,6 @@ public class RegisterScreen extends ScreenBase {
 		final HorizontalGroup hgRegister = new HorizontalGroup();
 		hgRegister.addActor(lLogin);
 		hgRegister.addActor(lHere);
-		lTitle.setFontScale(3);
 		lUsername.setAlignment(Align.center);
 		lPassword.setAlignment(Align.center);
 		lConfirmPassword.setAlignment(Align.center);
@@ -61,7 +62,7 @@ public class RegisterScreen extends ScreenBase {
 		tfConfirmPassword.setPasswordCharacter('\u2022');
 		tfConfirmPassword.setPasswordMode(true);
 		
-		table.add(lTitle).padBottom(50).padTop(100).colspan(2);
+		table.add(iTitle).padBottom(50).padTop(50).colspan(2).size(982*0.5f, 272*0.5f);
 		table.row();
 		table.add(lUsername).padBottom(5).colspan(2);
 		table.row();
@@ -81,11 +82,15 @@ public class RegisterScreen extends ScreenBase {
 		
 		tbRegister.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
-				Status status = Accounts.addAccount(tfUsername.getText(), tfPassword.getText());
-				if(status == Accounts.Status.SUCCESS)
-					game.setScreen(new LoginScreen(game));
-				else
-					Accounts.friendlyError(stage, status);
+				if(tfPassword.getText().equals(tfConfirmPassword.getText())) {
+					Status status = Accounts.addAccount(tfUsername.getText(), tfPassword.getText());
+					if(status == Accounts.Status.SUCCESS)
+						game.setScreen(new LoginScreen(game));
+					else
+						Accounts.friendlyError(stage, status);
+				} else {
+					Accounts.friendlyError(stage, Accounts.Status.PASSWORDS_NOT_SAME);
+				}
 			}
 		});
 		

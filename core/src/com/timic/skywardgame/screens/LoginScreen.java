@@ -3,9 +3,11 @@ package com.timic.skywardgame.screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -36,7 +38,8 @@ public class LoginScreen extends ScreenBase {
 		table.align(Align.top);
 		stage.addActor(table);
 		
-		final Label lTitle = new Label("Skyward", this.skin);
+		//final Label lTitle = new Label("Skyward", this.skin);
+		final Image iTitle = new Image(new Texture(Gdx.files.internal("data/images/skyward.png")));
 		final Label lUsername = new Label("Username", this.skin);
 		final Label lPassword = new Label("Password", this.skin);
 		final Label lRegister = new Label("Don't have an account? Register ", this.skin);
@@ -48,7 +51,7 @@ public class LoginScreen extends ScreenBase {
 		hgRegister.addActor(lRegister);
 		hgRegister.addActor(lHere);
 		//final TextButton tbRegister = new TextButton("Register", this.skin);
-		lTitle.setFontScale(3);
+		//lTitle.setFontScale(3);
 		lUsername.setAlignment(Align.center);
 		lPassword.setAlignment(Align.center);
 		tfUsername.setAlignment(Align.center);
@@ -56,7 +59,7 @@ public class LoginScreen extends ScreenBase {
 		tfPassword.setPasswordCharacter('\u2022');
 		tfPassword.setPasswordMode(true);
 		
-		table.add(lTitle).padBottom(50).padTop(100).colspan(2);
+		table.add(iTitle).padBottom(50).padTop(50).colspan(2).size(982*0.5f, 272*0.5f);
 		table.row();
 		table.add(lUsername).padBottom(5).colspan(2);
 		table.row();

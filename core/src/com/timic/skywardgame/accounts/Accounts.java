@@ -6,6 +6,8 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -19,40 +21,42 @@ public class Accounts {
 	private static FileHandle database;
 	private final static char SEPARATOR = ((char)007); // ASCII beep sound
 	
+	public static String loggedInUsername;
+	
 	public enum Status {
 		SUCCESS,
 		USER_NOT_FOUND,
 		PASSWORD_INCORRECT,
 		USERNAME_EXISTS,
+		FIELDS_EMPTY,
+		PASSWORDS_NOT_SAME,
 		RUNTIME_ERROR,
 		IOEXCEPTION_ERROR,
 		UNKNOWN_ERROR
 	}
-	/*public final static int SUCCESS = 0;
-	public final static int RUNTIME_ERROR = 1;
-	public final static int IOEXCEPTION_ERROR = 2;
-	public final static int USER_NOT_FOUND = 3;
-	public final static int PASSWORD_INCORRECT = 4;
-	public final static int UNKNOWN_ERROR = 666;*/
 	
 	public static Status addAccount(String username, String password) {
 		checkDatabaseFile();
-		if(authenticate(username, "", true) != Status.SUCCESS) {
-			try {
-				PrintWriter pw = new PrintWriter(database.writer(true));
-				pw.print(username);
-				pw.print(SEPARATOR);
-				pw.print(md5crypt(password));
-				pw.println();
-				pw.flush();
-				pw.close();
-				return Status.SUCCESS;
-			} catch(GdxRuntimeException e) {
-				Gdx.app.error("Skyward", e.getMessage());
-				return Status.RUNTIME_ERROR;
+		if(username.matches(".*\\w.*") && password.matches(".*\\w.*")) {
+			if(authenticate(username, "", true) != Status.SUCCESS) {
+				try {
+					PrintWriter pw = new PrintWriter(database.writer(true));
+					pw.print(username);
+					pw.print(SEPARATOR);
+					pw.print(md5crypt(password));
+					pw.println();
+					pw.flush();
+					pw.close();
+					return Status.SUCCESS;
+				} catch(GdxRuntimeException e) {
+					Gdx.app.error("Skyward", e.getMessage());
+					return Status.RUNTIME_ERROR;
+				}
+			} else {
+				return Status.USERNAME_EXISTS;
 			}
 		} else {
-			return Status.USERNAME_EXISTS;
+			return Status.FIELDS_EMPTY;
 		}
 	}
 	
@@ -64,30 +68,86 @@ public class Accounts {
 		checkDatabaseFile();
 		try {
 			BufferedReader br = new BufferedReader(database.reader());
-			try {
-				while(br.ready()) {
-					String[] databaseRow = br.readLine().split(Character.toString(SEPARATOR));
-					if(databaseRow[0].equals(username)) {
-						if(skipPasswordCheck)
-							return Status.SUCCESS;
-						if(databaseRow[1].equals(md5crypt(password))) {
-							br.close();
-							return Status.SUCCESS;
-						} else {
-							br.close();
-							return Status.PASSWORD_INCORRECT;
-						}
+			while(br.ready()) {
+				String[] databaseRow = br.readLine().split(Character.toString(SEPARATOR));
+				if(databaseRow[0].equals(username)) {
+					if(skipPasswordCheck) {
+						br.close();
+						return Status.SUCCESS;
+					}
+					if(databaseRow[1].equals(md5crypt(password))) {
+						br.close();
+						loggedInUsername = databaseRow[0];
+						return Status.SUCCESS;
+					} else {
+						br.close();
+						return Status.PASSWORD_INCORRECT;
 					}
 				}
-				br.close();
-				return Status.USER_NOT_FOUND;
-			} catch(IOException e) {
-				Gdx.app.error("Skyward", e.getMessage());
-				return Status.IOEXCEPTION_ERROR;
 			}
+			br.close();
+			return Status.USER_NOT_FOUND;
+		} catch(IOException e) {
+			Gdx.app.error("Skyward", e.getMessage());
+			return Status.IOEXCEPTION_ERROR;
 		} catch(GdxRuntimeException e) {
 			Gdx.app.error("Skyward", e.getMessage());
 			return Status.RUNTIME_ERROR;
+		}
+	}
+	
+	public static Status updateProfile(String newUsername, String newPassword) {
+		checkDatabaseFile();
+		if(newUsername.matches(".*\\w.*") || newPassword.matches(".*\\w.*")) {
+			// Ordered temporary account list
+			LinkedHashMap<String, String> tempAccounts = new LinkedHashMap<String, String>();
+			try {
+				BufferedReader br = new BufferedReader(database.reader());
+				while(br.ready()) {
+					String[] databaseRow = br.readLine().split(Character.toString(SEPARATOR));
+					if(databaseRow[0] != loggedInUsername && newUsername.matches(".*\\w.*") && databaseRow[0].equals(newUsername)) {
+						br.close();
+						tempAccounts.clear();
+						return Status.USERNAME_EXISTS;
+					}
+					tempAccounts.put(databaseRow[0], databaseRow[1]);
+				}
+				br.close();
+				database.writeBytes(new byte[0], false); // Delete content
+				PrintWriter pw = new PrintWriter(database.writer(true));
+				for(Map.Entry<String,String> m : tempAccounts.entrySet()) {
+					String username = (String) m.getKey();
+					String password = (String) m.getValue();
+					if(username.equals(loggedInUsername)) {
+						if(newUsername.matches(".*\\w.*")) {
+							username = newUsername;
+							loggedInUsername = newUsername;
+						}
+						if(newPassword.matches(".*\\w.*"))
+							password = md5crypt(newPassword);
+						pw.print(username);
+						pw.print(SEPARATOR);
+						pw.print(password);
+					} else {
+						pw.print(username);
+						pw.print(SEPARATOR);
+						pw.print(password);
+					}
+					pw.println();
+				}
+				pw.flush();
+				pw.close();
+				tempAccounts.clear();
+				return Status.SUCCESS;
+			} catch(IOException e) {
+				Gdx.app.error("Skyward", e.getMessage());
+				return Status.IOEXCEPTION_ERROR;
+			} catch(GdxRuntimeException e) {
+				Gdx.app.error("Skyward", e.getMessage());
+				return Status.RUNTIME_ERROR;
+			}
+		} else {
+			return Status.FIELDS_EMPTY;
 		}
 	}
 	
@@ -100,6 +160,10 @@ public class Accounts {
 				friendlyError = "Password is incorrect!";
 			else if(status == Status.USERNAME_EXISTS)
 				friendlyError = "User with that name already exists!";
+			else if(status == Status.FIELDS_EMPTY)
+				friendlyError = "Required fields are empty!";
+			else if(status == Status.PASSWORDS_NOT_SAME)
+				friendlyError = "Password confirmation failed!";
 			else
 				friendlyError = "An unknown error has occured";
 			new Dialog("Error!", SkywardGame.SKIN_VISION, "dialog") {
@@ -125,7 +189,7 @@ public class Accounts {
 	
 	// Safest way to get MD5 \o/
 	// String is not secure
-	public static String md5crypt(String message) {
+	private static String md5crypt(String message) {
 		String digest = null;
 		try {
 			MessageDigest md = MessageDigest.getInstance("MD5");
