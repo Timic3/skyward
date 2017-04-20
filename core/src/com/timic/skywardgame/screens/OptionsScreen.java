@@ -5,6 +5,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -31,6 +33,7 @@ public class OptionsScreen extends ScreenBase {
 		Table table = new Table();
 		table.setFillParent(true);
 		table.align(Align.top);
+		table.setDebug(true);
 		table.setRound(false);
 		stage.addActor(table);
 		
@@ -38,11 +41,15 @@ public class OptionsScreen extends ScreenBase {
 		final Label lConfirmNewPassword = new Label("Confirm New Password", this.skin);
 		final Label lNewUsername = new Label("New Username", this.skin);
 		final Label lNote = new Label("Leave blank if you don't want to change it", this.skin);
+		final Label lMovement = new Label("Movement", this.skin);
 		final TextField tfNewPassword = new TextField("", this.skin);
 		final TextField tfConfirmNewPassword = new TextField("", this.skin);
 		final TextField tfNewUsername = new TextField("", this.skin);
+		final CheckBox cbMouse = new CheckBox("Mouse", this.skin);
+		final CheckBox cbKeys = new CheckBox("Keys", this.skin);
 		final TextButton tbBack = new TextButton("Back", this.skin);
 		final TextButton tbSave = new TextButton("Save", this.skin);
+		final ButtonGroup<CheckBox> bgMovement = new ButtonGroup<CheckBox>(cbMouse, cbKeys);
 		tfNewPassword.setAlignment(Align.center);
 		tfNewPassword.setPasswordCharacter('\u2022');
 		tfNewPassword.setPasswordMode(true);
@@ -50,6 +57,9 @@ public class OptionsScreen extends ScreenBase {
 		tfConfirmNewPassword.setPasswordCharacter('\u2022');
 		tfConfirmNewPassword.setPasswordMode(true);
 		tfNewUsername.setAlignment(Align.center);
+		bgMovement.setMaxCheckCount(1);
+		bgMovement.setMinCheckCount(1);
+		bgMovement.setChecked("Mouse");
 		
 		table.add(lNewPassword).colspan(2).padTop(60);
 		table.row();
@@ -62,6 +72,11 @@ public class OptionsScreen extends ScreenBase {
 		table.add(lNewUsername).colspan(2).padTop(10);
 		table.row();
 		table.add(tfNewUsername).colspan(2).width(300);
+		table.row();
+		table.add(lMovement).colspan(2).padTop(10);
+		table.row().padTop(10);
+		table.add(cbMouse);
+		table.add(cbKeys);
 		table.row().padTop(20);
 		table.add(tbBack).align(Align.right).padRight(10);
 		table.add(tbSave).align(Align.left).padLeft(10);

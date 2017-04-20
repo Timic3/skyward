@@ -47,7 +47,7 @@ public class MenuScreen extends ScreenBase {
 		
 		tbPlay.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
-				
+				game.setScreen(new GameScreen(game));
 			}
 		});
 		
