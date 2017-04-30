@@ -6,8 +6,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -22,6 +21,7 @@ public class Accounts {
 	private final static char SEPARATOR = ((char)007); // ASCII beep sound
 	
 	public static String loggedInUsername;
+	public static int movement;
 	
 	public enum Status {
 		SUCCESS,
@@ -44,6 +44,8 @@ public class Accounts {
 					pw.print(username);
 					pw.print(SEPARATOR);
 					pw.print(md5crypt(password));
+					pw.print(SEPARATOR);
+					pw.print("0");
 					pw.println();
 					pw.flush();
 					pw.close();
@@ -78,6 +80,7 @@ public class Accounts {
 					if(databaseRow[1].equals(md5crypt(password))) {
 						br.close();
 						loggedInUsername = databaseRow[0];
+						movement = Integer.parseInt(databaseRow[2]);
 						return Status.SUCCESS;
 					} else {
 						br.close();
@@ -96,11 +99,11 @@ public class Accounts {
 		}
 	}
 	
-	public static Status updateProfile(String newUsername, String newPassword) {
+	public static Status updateProfile(String newUsername, String newPassword, int newMovement) {
 		checkDatabaseFile();
-		if(newUsername.matches(".*\\w.*") || newPassword.matches(".*\\w.*")) {
+		if(newUsername.matches(".*\\w.*") || newPassword.matches(".*\\w.*") || newMovement != movement) {
 			// Ordered temporary account list
-			LinkedHashMap<String, String> tempAccounts = new LinkedHashMap<String, String>();
+			ArrayList<Account> tempAccounts = new ArrayList<Account>();
 			try {
 				BufferedReader br = new BufferedReader(database.reader());
 				while(br.ready()) {
@@ -110,14 +113,14 @@ public class Accounts {
 						tempAccounts.clear();
 						return Status.USERNAME_EXISTS;
 					}
-					tempAccounts.put(databaseRow[0], databaseRow[1]);
+					tempAccounts.add(new Account(databaseRow[0], databaseRow[1], 0));
 				}
 				br.close();
 				database.writeBytes(new byte[0], false); // Delete content
 				PrintWriter pw = new PrintWriter(database.writer(true));
-				for(Map.Entry<String,String> m : tempAccounts.entrySet()) {
-					String username = (String) m.getKey();
-					String password = (String) m.getValue();
+				for(Account account : tempAccounts) {
+					String username = account.getUsername();
+					String password = account.getPassword();
 					if(username.equals(loggedInUsername)) {
 						if(newUsername.matches(".*\\w.*")) {
 							username = newUsername;
@@ -128,10 +131,15 @@ public class Accounts {
 						pw.print(username);
 						pw.print(SEPARATOR);
 						pw.print(password);
+						pw.print(SEPARATOR);
+						pw.print(newMovement);
+						movement = newMovement;
 					} else {
 						pw.print(username);
 						pw.print(SEPARATOR);
 						pw.print(password);
+						pw.print(SEPARATOR);
+						pw.print(movement);
 					}
 					pw.println();
 				}

@@ -33,20 +33,20 @@ public class OptionsScreen extends ScreenBase {
 		Table table = new Table();
 		table.setFillParent(true);
 		table.align(Align.top);
-		table.setDebug(true);
+		//table.setDebug(true);
 		table.setRound(false);
 		stage.addActor(table);
 		
 		final Label lNewPassword = new Label("New Password", this.skin);
 		final Label lConfirmNewPassword = new Label("Confirm New Password", this.skin);
 		final Label lNewUsername = new Label("New Username", this.skin);
-		final Label lNote = new Label("Leave blank if you don't want to change it", this.skin);
+		//final Label lNote = new Label("Leave blank if you don't want to change it", this.skin);
 		final Label lMovement = new Label("Movement", this.skin);
 		final TextField tfNewPassword = new TextField("", this.skin);
 		final TextField tfConfirmNewPassword = new TextField("", this.skin);
 		final TextField tfNewUsername = new TextField("", this.skin);
-		final CheckBox cbMouse = new CheckBox("Mouse", this.skin);
-		final CheckBox cbKeys = new CheckBox("Keys", this.skin);
+		final CheckBox cbMouse = new CheckBox("Keys", this.skin);
+		final CheckBox cbKeys = new CheckBox("Mouse", this.skin);
 		final TextButton tbBack = new TextButton("Back", this.skin);
 		final TextButton tbSave = new TextButton("Save", this.skin);
 		final ButtonGroup<CheckBox> bgMovement = new ButtonGroup<CheckBox>(cbMouse, cbKeys);
@@ -59,7 +59,10 @@ public class OptionsScreen extends ScreenBase {
 		tfNewUsername.setAlignment(Align.center);
 		bgMovement.setMaxCheckCount(1);
 		bgMovement.setMinCheckCount(1);
-		bgMovement.setChecked("Mouse");
+		if(Accounts.movement == 0)
+			bgMovement.setChecked("Keys");
+		else
+			bgMovement.setChecked("Mouse");
 		
 		table.add(lNewPassword).colspan(2).padTop(60);
 		table.row();
@@ -80,8 +83,8 @@ public class OptionsScreen extends ScreenBase {
 		table.row().padTop(20);
 		table.add(tbBack).align(Align.right).padRight(10);
 		table.add(tbSave).align(Align.left).padLeft(10);
-		table.row().padTop(20);
-		table.add(lNote).colspan(2);
+		//table.row().padTop(20);
+		//table.add(lNote).colspan(2);
 		
 		tbBack.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
@@ -92,7 +95,7 @@ public class OptionsScreen extends ScreenBase {
 		tbSave.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
 				if(tfNewPassword.getText().equals(tfConfirmNewPassword.getText())) {
-					Status status = Accounts.updateProfile(tfNewUsername.getText(), tfNewPassword.getText());
+					Status status = Accounts.updateProfile(tfNewUsername.getText(), tfNewPassword.getText(), bgMovement.getCheckedIndex());
 					if(status == Accounts.Status.SUCCESS)
 						game.setScreen(new MenuScreen(game));
 					else

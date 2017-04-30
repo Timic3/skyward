@@ -59,7 +59,7 @@ public class LoginScreen extends ScreenBase {
 		tfPassword.setPasswordCharacter('\u2022');
 		tfPassword.setPasswordMode(true);
 		
-		table.add(iTitle).padBottom(50).padTop(50).colspan(2).size(982*0.5f, 272*0.5f);
+		table.add(iTitle).padBottom(50).padTop(50).colspan(2).size(982*0.4f, 272*0.4f);
 		table.row();
 		table.add(lUsername).padBottom(5).colspan(2);
 		table.row();
