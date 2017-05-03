@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 public class World {
 	public static final int WORLD_WIDTH = 560;
 	public static final int WORLD_HEIGHT = (int)Math.pow(10, 5);
-	public static final Vector2 WORLD_GRAVITY = new Vector2(0, -12);
+	public static final Vector2 WORLD_GRAVITY = new Vector2(0, -612);
 	
 	public final Hero hero;
 	public final List<Platform> platforms;
@@ -29,6 +29,8 @@ public class World {
 	}
 	
 	private void updateHero(float delta, float accelerationX) {
+		if(hero.position.y <= 0)
+			hero.hitPlatform();
 		hero.velocity.x = -accelerationX*Hero.HERO_MOVE_VELOCITY;
 		hero.update(delta);
 	}
@@ -42,7 +44,7 @@ public class World {
 			Platform platform = new Platform(x, y);
 			platforms.add(platform);
 			
-			y += (maxJumpHeight-0.5f);
+			y += (maxJumpHeight);
 			y -= seed.nextFloat()*(maxJumpHeight/3);
 		}
 	}

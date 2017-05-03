@@ -10,6 +10,8 @@ public class Assets {
 	
 	public static Texture hero;
 	public static TextureRegion heroStand;
+	public static TextureRegion heroDuck;
+	public static TextureRegion heroJump;
 	
 	public static Texture tiles;
 	public static TextureRegion snowHalfLeft;
@@ -25,6 +27,8 @@ public class Assets {
 		backgroundRegion = new TextureRegion(background, 150, 100, 560, 800);
 		hero = loadTexture("data/images/hero_2.png");
 		heroStand = new TextureRegion(hero, 67, 190, 66, 92);
+		heroDuck = new TextureRegion(hero, 355, 95, 67, 72);
+		heroJump = new TextureRegion(hero, 423, 95, 66, 94);
 		tiles = loadTexture("data/images/tiles.png");
 		snowHalfLeft = new TextureRegion(tiles, 216, 576, 70, 70);
 		snowHalfMid = new TextureRegion(tiles, 216, 504, 70, 70);
