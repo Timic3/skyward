@@ -4,9 +4,9 @@ public class Hero extends Entity {
 	public static final int HERO_WIDTH = 66;
 	public static final int HERO_HEIGHT = 94;
 	public static final float HERO_JUMP_VELOCITY = 581;
-	public static final float HERO_MOVE_VELOCITY = 110;
+	public static final float HERO_MOVE_VELOCITY = 100;
 	
-	public static State state;
+	public State state;
 	public static int facing = 1;
 	
 	public enum State {
@@ -18,12 +18,14 @@ public class Hero extends Entity {
 	public Hero(float x, float y) {
 		super(x, y, HERO_WIDTH, HERO_HEIGHT);
 		// TODO Auto-generated constructor stub
-		state = State.FALL;
+		this.state = State.FALL;
 	}
 	
 	public void update(float delta) {
 		velocity.add(World.WORLD_GRAVITY.x*delta, World.WORLD_GRAVITY.y*delta);
 		position.add(velocity.x*delta,velocity.y*delta);
+		bounds.x = position.x-bounds.width/2;
+		bounds.y = position.y-bounds.height/2;
 		
 		if(velocity.y > 0)
 			if(state != State.JUMP)

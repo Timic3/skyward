@@ -21,7 +21,7 @@ public class Accounts {
 	private final static char SEPARATOR = ((char)007); // ASCII beep sound
 	
 	public static String loggedInUsername;
-	public static int movement;
+	public static int movement; // 0 = keys, 1 = mouse
 	
 	public enum Status {
 		SUCCESS,

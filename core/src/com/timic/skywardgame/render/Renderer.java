@@ -1,7 +1,6 @@
 package com.timic.skywardgame.render;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.timic.skywardgame.logic.Assets;
@@ -26,6 +25,8 @@ public class Renderer {
 	}
 	
 	public void render() {
+		if(world.hero.position.y > camera.position.y)
+			camera.position.y = world.hero.position.y;
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
 		renderBackground();
@@ -50,7 +51,7 @@ public class Renderer {
 	private void renderHero() {
 		TextureRegion heroSprite = Assets.heroJump;
 		int actualHeight = Hero.HERO_HEIGHT;
-		if(Hero.state == State.FALL) {
+		if(world.hero.state == State.FALL) {
 			actualHeight = 72;
 			heroSprite = Assets.heroDuck;
 		}
@@ -59,15 +60,19 @@ public class Renderer {
 	}
 	
 	private void renderPlatforms() {
-		//batch.draw(Assets.snowHalfLeft, world.platform.position.x, world.platform.position.y, Platform.PLATFORM_WIDTH, Platform.PLATFORM_HEIGHT);
-		//batch.draw(Assets.snowHalfRight, world.platform.position.x+70, world.platform.position.y, Platform.PLATFORM_WIDTH, Platform.PLATFORM_HEIGHT);
 		for(int i=0;i < world.platforms.size(); i++) {
 			Platform platform = world.platforms.get(i);
-			if(platform.position.y > 800)
+			if(platform.position.y < camera.position.y/2 && i != 0)
+				continue;
+			if(platform.position.y > camera.position.y*2)
 				break;
 			batch.draw(Assets.snowHalfLeft, platform.position.x, platform.position.y, Platform.PLATFORM_WIDTH, Platform.PLATFORM_HEIGHT);
 			batch.draw(Assets.snowHalfRight, platform.position.x+70, platform.position.y, Platform.PLATFORM_WIDTH, Platform.PLATFORM_HEIGHT);
 		}
+	}
+	
+	public float getCameraY() {
+		return this.camera.position.y;
 	}
 	
 }

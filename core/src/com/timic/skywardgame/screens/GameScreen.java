@@ -2,7 +2,6 @@ package com.timic.skywardgame.screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -14,7 +13,7 @@ public class GameScreen extends ScreenBase {
 	private OrthographicCamera camera;
 	
 	private World world;
-	private Renderer renderer;
+	private static Renderer renderer;
 
 	public GameScreen(Game game) {
 		super(game);
@@ -31,12 +30,7 @@ public class GameScreen extends ScreenBase {
 	}
 	
 	public void update(float delta) {
-		float acceleration = 0;
-		if(Gdx.input.isKeyPressed(Keys.DPAD_LEFT))
-			acceleration = 5f;
-		if(Gdx.input.isKeyPressed(Keys.DPAD_RIGHT))
-			acceleration = -5f;
-		world.update(delta, acceleration);
+		world.update(delta);
 	}
 	
 	public void draw() {
@@ -70,4 +64,9 @@ public class GameScreen extends ScreenBase {
 	public void hide() {
 		Gdx.app.debug("Skyward", "Disposing of game screen");
 	}
+
+	public static Renderer getRenderer() {
+		return renderer;
+	}
+	
 }
