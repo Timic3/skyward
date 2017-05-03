@@ -75,4 +75,11 @@ public class Renderer {
 		return this.camera.position.y;
 	}
 	
+	public void dispose() {
+		world.platforms.clear();
+		//batch.dispose();
+		camera = null;
+		world = null;
+	}
+	
 }

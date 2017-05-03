@@ -33,6 +33,7 @@ public class MenuScreen extends ScreenBase {
 		final Label lWelcome = new Label("Welcome back, {{Username}}!", this.skin);
 		lWelcome.setText("Welcome back, "+Accounts.loggedInUsername+"!");
 		final TextButton tbPlay = new TextButton("Play", this.skin);
+		final TextButton tbLeaderboard = new TextButton("Leaderboard", this.skin);
 		final TextButton tbOptions = new TextButton("Options", this.skin);
 		final TextButton tbQuit = new TextButton("Quit", this.skin);
 		
@@ -41,6 +42,8 @@ public class MenuScreen extends ScreenBase {
 		table.row();
 		table.add(tbPlay).width(250).padTop(50);
 		table.row();
+		table.add(tbLeaderboard).width(250).padTop(10);
+		table.row();
 		table.add(tbOptions).width(250).padTop(10);
 		table.row();
 		table.add(tbQuit).width(250).padTop(10);
@@ -48,6 +51,12 @@ public class MenuScreen extends ScreenBase {
 		tbPlay.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
 				game.setScreen(new GameScreen(game));
+			}
+		});
+		
+		tbLeaderboard.addListener(new ClickListener() {
+			public void clicked(InputEvent event, float x, float y) {
+				game.setScreen(new LeaderboardScreen(game));
 			}
 		});
 		

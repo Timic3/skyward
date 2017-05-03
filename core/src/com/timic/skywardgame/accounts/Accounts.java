@@ -7,6 +7,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -22,6 +23,7 @@ public class Accounts {
 	
 	public static String loggedInUsername;
 	public static int movement; // 0 = keys, 1 = mouse
+	public static int score;
 	
 	public enum Status {
 		SUCCESS,
@@ -44,6 +46,8 @@ public class Accounts {
 					pw.print(username);
 					pw.print(SEPARATOR);
 					pw.print(md5crypt(password));
+					pw.print(SEPARATOR);
+					pw.print("0");
 					pw.print(SEPARATOR);
 					pw.print("0");
 					pw.println();
@@ -81,6 +85,7 @@ public class Accounts {
 						br.close();
 						loggedInUsername = databaseRow[0];
 						movement = Integer.parseInt(databaseRow[2]);
+						score = Integer.parseInt(databaseRow[3]);
 						return Status.SUCCESS;
 					} else {
 						br.close();
@@ -99,9 +104,17 @@ public class Accounts {
 		}
 	}
 	
+	public static Status updateScore(int newScore) {
+		return updateProfile("", "", movement, newScore);
+	}
+	
 	public static Status updateProfile(String newUsername, String newPassword, int newMovement) {
+		return updateProfile(newUsername, newPassword, newMovement, 0);
+	}
+	
+	public static Status updateProfile(String newUsername, String newPassword, int newMovement, int newScore) {
 		checkDatabaseFile();
-		if(newUsername.matches(".*\\w.*") || newPassword.matches(".*\\w.*") || newMovement != movement) {
+		if(newUsername.matches(".*\\w.*") || newPassword.matches(".*\\w.*") || newMovement != movement || newScore > 0) {
 			// Ordered temporary account list
 			ArrayList<Account> tempAccounts = new ArrayList<Account>();
 			try {
@@ -113,7 +126,7 @@ public class Accounts {
 						tempAccounts.clear();
 						return Status.USERNAME_EXISTS;
 					}
-					tempAccounts.add(new Account(databaseRow[0], databaseRow[1], 0));
+					tempAccounts.add(new Account(databaseRow[0], databaseRow[1], 0, Integer.parseInt(databaseRow[3])));
 				}
 				br.close();
 				database.writeBytes(new byte[0], false); // Delete content
@@ -121,6 +134,7 @@ public class Accounts {
 				for(Account account : tempAccounts) {
 					String username = account.getUsername();
 					String password = account.getPassword();
+					int currentScore = account.getScore();
 					if(username.equals(loggedInUsername)) {
 						if(newUsername.matches(".*\\w.*")) {
 							username = newUsername;
@@ -128,11 +142,17 @@ public class Accounts {
 						}
 						if(newPassword.matches(".*\\w.*"))
 							password = md5crypt(newPassword);
+						if(newScore > currentScore) {
+							currentScore = newScore;
+							score = newScore;
+						}
 						pw.print(username);
 						pw.print(SEPARATOR);
 						pw.print(password);
 						pw.print(SEPARATOR);
 						pw.print(newMovement);
+						pw.print(SEPARATOR);
+						pw.print(score);
 						movement = newMovement;
 					} else {
 						pw.print(username);
@@ -140,6 +160,8 @@ public class Accounts {
 						pw.print(password);
 						pw.print(SEPARATOR);
 						pw.print(movement);
+						pw.print(SEPARATOR);
+						pw.print(currentScore);
 					}
 					pw.println();
 				}
@@ -156,6 +178,26 @@ public class Accounts {
 			}
 		} else {
 			return Status.FIELDS_EMPTY;
+		}
+	}
+	
+	public static LinkedHashMap<String, Integer> getLeaderboard() {
+		checkDatabaseFile();
+		try {
+			LinkedHashMap<String, Integer> leaderboard = new LinkedHashMap<String, Integer>();
+			BufferedReader br = new BufferedReader(database.reader());
+			while(br.ready()) {
+				String[] databaseRow = br.readLine().split(Character.toString(SEPARATOR));
+				leaderboard.put(databaseRow[0], Integer.parseInt(databaseRow[3]));
+			}
+			br.close();
+			return leaderboard;
+		} catch(IOException e) {
+			Gdx.app.error("Skyward", e.getMessage());
+			return null;
+		} catch(GdxRuntimeException e) {
+			Gdx.app.error("Skyward", e.getMessage());
+			return null;
 		}
 	}
 	

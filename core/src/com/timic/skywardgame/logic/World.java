@@ -20,12 +20,18 @@ public class World {
 	
 	public final Random seed;
 	
+	public int score;
+	public int maxHeight;
+	
 	public World() {
 		this.hero = new Hero(WORLD_WIDTH/2-Hero.HERO_WIDTH/2, 0);
 		this.platforms = new ArrayList<Platform>();
 		seed = new Random();
 		
 		generateSky();
+		
+		this.score = 0;
+		this.maxHeight = 0;
 	}
 	
 	public void update(float delta) {
@@ -48,20 +54,23 @@ public class World {
 		updateHero(delta, acceleration);
 		updatePlatforms(delta);
 		checkCollisions();
+		if(maxHeight-450 > hero.position.y) {
+			GameScreen.gameOver = true;
+		}
 	}
 	
 	private void generateSky() {
 		float maxJumpHeight = (float)Math.pow(Hero.HERO_JUMP_VELOCITY, 2)/(2*-WORLD_GRAVITY.y);
 		float y = maxJumpHeight/1.5f;
 		while(y < WORLD_HEIGHT) {
-			int type = seed.nextFloat() > 0.0f ? 1 : 0;
+			int type = seed.nextFloat() > 0.6f ? 1 : 0;
 			float x = seed.nextFloat()*(WORLD_WIDTH-Platform.PLATFORM_WIDTH*2);
 			
 			Platform platform = new Platform(x, y, type);
 			platforms.add(platform);
 			
 			y += (maxJumpHeight);
-			//y -= seed.nextFloat()*(maxJumpHeight/3);
+			y -= seed.nextFloat()*(maxJumpHeight/3);
 		}
 	}
 	
@@ -70,6 +79,9 @@ public class World {
 			hero.hitPlatform();
 		hero.velocity.x = -accelerationX*Hero.HERO_MOVE_VELOCITY;
 		hero.update(delta);
+		maxHeight = Math.max((int)hero.position.y, maxHeight);
+		score = (int)(maxHeight/((float)Math.pow(Hero.HERO_JUMP_VELOCITY, 2)/(2*-WORLD_GRAVITY.y)));
+		GameScreen.score = score;
 	}
 	
 	private void updatePlatforms(float delta) {
@@ -101,6 +113,10 @@ public class World {
 				}
 			}
 		}
+	}
+	
+	public void dispose() {
+		
 	}
 	
 }

@@ -2,6 +2,7 @@ package com.timic.skywardgame.logic;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Assets {
@@ -18,6 +19,8 @@ public class Assets {
 	public static TextureRegion snowHalfMid;
 	public static TextureRegion snowHalfRight;
 	
+	public static BitmapFont font;
+	
 	public static Texture loadTexture(String file) {
 		return new Texture(Gdx.files.internal(file));
 	}
@@ -33,6 +36,6 @@ public class Assets {
 		snowHalfLeft = new TextureRegion(tiles, 216, 576, 70, 70);
 		snowHalfMid = new TextureRegion(tiles, 216, 504, 70, 70);
 		snowHalfRight = new TextureRegion(tiles, 216, 432, 70, 70);
-		
+		font = new BitmapFont(Gdx.files.internal("data/fonts/arial.fnt"), Gdx.files.internal("data/fonts/arial.png"), false);
 	}
 }
