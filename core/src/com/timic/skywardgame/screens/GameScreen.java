@@ -2,6 +2,7 @@ package com.timic.skywardgame.screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -30,7 +31,12 @@ public class GameScreen extends ScreenBase {
 	}
 	
 	public void update(float delta) {
-		
+		float acceleration = 0;
+		if(Gdx.input.isKeyPressed(Keys.DPAD_LEFT))
+			acceleration = 5f;
+		if(Gdx.input.isKeyPressed(Keys.DPAD_RIGHT))
+			acceleration = -5f;
+		world.update(delta, acceleration);
 	}
 	
 	public void draw() {
