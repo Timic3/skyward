@@ -39,11 +39,11 @@ public class LeaderboardScreen extends ScreenBase {
 		
 		LinkedHashMap<String, Integer> sorted = leaderboard.entrySet().stream()
         .sorted(
-        		(x, y) -> y.getKey().compareTo(x.getKey())
+        		(x, y) -> y.getValue().compareTo(x.getValue())
         		)
         .collect(Collectors.toMap(
         		x -> x.getKey(),
-        		x -> x.getValue(),
+        		x -> (int)x.getValue(),
         		(x, y) -> x,
         		LinkedHashMap::new
         		)
