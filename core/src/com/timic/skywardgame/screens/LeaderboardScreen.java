@@ -21,7 +21,6 @@ public class LeaderboardScreen extends ScreenBase {
 
 	public LeaderboardScreen(Game game) {
 		super(game);
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override

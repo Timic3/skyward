@@ -77,7 +77,6 @@ public class Renderer {
 	
 	public void dispose() {
 		world.platforms.clear();
-		//batch.dispose();
 		camera = null;
 		world = null;
 	}

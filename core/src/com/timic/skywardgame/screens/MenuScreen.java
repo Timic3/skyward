@@ -17,7 +17,6 @@ public class MenuScreen extends ScreenBase {
 
 	public MenuScreen(Game game) {
 		super(game);
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override

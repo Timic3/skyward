@@ -17,7 +17,6 @@ public class Hero extends Entity {
 
 	public Hero(float x, float y) {
 		super(x, y, HERO_WIDTH, HERO_HEIGHT);
-		// TODO Auto-generated constructor stub
 		this.state = State.FALL;
 	}
 	

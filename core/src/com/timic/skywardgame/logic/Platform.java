@@ -9,7 +9,6 @@ public class Platform extends Entity {
 
 	public Platform(float x, float y, int type) {
 		super(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT);
-		// TODO Auto-generated constructor stub
 		this.type = type;
 		if(type == 1)
 			velocity.x = PLATFORM_VELOCITY;

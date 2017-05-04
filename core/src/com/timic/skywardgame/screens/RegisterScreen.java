@@ -23,7 +23,6 @@ public class RegisterScreen extends ScreenBase {
 
 	public RegisterScreen(Game game) {
 		super(game);
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override
@@ -33,7 +32,6 @@ public class RegisterScreen extends ScreenBase {
 		
 		Table table = new Table();
 		table.setFillParent(true);
-		//table.setDebug(true);
 		table.setRound(false);
 		table.align(Align.top);
 		stage.addActor(table);

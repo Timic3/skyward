@@ -23,7 +23,6 @@ public class LoginScreen extends ScreenBase {
 
 	public LoginScreen(Game game) {
 		super(game);
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override
@@ -33,12 +32,10 @@ public class LoginScreen extends ScreenBase {
 		
 		Table table = new Table();
 		table.setFillParent(true);
-		//table.setDebug(true);
 		table.setRound(false);
 		table.align(Align.top);
 		stage.addActor(table);
 		
-		//final Label lTitle = new Label("Skyward", this.skin);
 		final Image iTitle = new Image(new Texture(Gdx.files.internal("data/images/skyward.png")));
 		final Label lUsername = new Label("Username", this.skin);
 		final Label lPassword = new Label("Password", this.skin);
@@ -50,8 +47,6 @@ public class LoginScreen extends ScreenBase {
 		final HorizontalGroup hgRegister = new HorizontalGroup();
 		hgRegister.addActor(lRegister);
 		hgRegister.addActor(lHere);
-		//final TextButton tbRegister = new TextButton("Register", this.skin);
-		//lTitle.setFontScale(3);
 		lUsername.setAlignment(Align.center);
 		lPassword.setAlignment(Align.center);
 		tfUsername.setAlignment(Align.center);

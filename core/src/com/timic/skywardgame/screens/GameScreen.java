@@ -24,13 +24,12 @@ public class GameScreen extends ScreenBase {
 
 	public GameScreen(Game game) {
 		super(game);
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override
 	public void show() {
 		batch = new SpriteBatch();
-		camera = new OrthographicCamera(560, 800); // 560, 800
+		camera = new OrthographicCamera(560, 800);
 		camera.position.set(560/2, 800/2, 0);
 		world = new World();
 		renderer = new Renderer(batch, world);
@@ -69,15 +68,6 @@ public class GameScreen extends ScreenBase {
 	
 	@Override
 	public void render(float delta) {
-		/*Gdx.gl.glClearColor(1.0f, 0.33f, 0.33f, 1.0f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stage.act(delta);
-		stage.draw();
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batcher.setProjectionMatrix(camera.combined);
-		batcher.enableBlending();
-		batcher.begin();
-		batcher.end();*/
 		if(!gameOver)
 			update(delta);
 		draw();

@@ -22,7 +22,6 @@ public class OptionsScreen extends ScreenBase {
 
 	public OptionsScreen(Game game) {
 		super(game);
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override
@@ -33,14 +32,12 @@ public class OptionsScreen extends ScreenBase {
 		Table table = new Table();
 		table.setFillParent(true);
 		table.align(Align.top);
-		//table.setDebug(true);
 		table.setRound(false);
 		stage.addActor(table);
 		
 		final Label lNewPassword = new Label("New Password", this.skin);
 		final Label lConfirmNewPassword = new Label("Confirm New Password", this.skin);
 		final Label lNewUsername = new Label("New Username", this.skin);
-		//final Label lNote = new Label("Leave blank if you don't want to change it", this.skin);
 		final Label lMovement = new Label("Movement", this.skin);
 		final TextField tfNewPassword = new TextField("", this.skin);
 		final TextField tfConfirmNewPassword = new TextField("", this.skin);
