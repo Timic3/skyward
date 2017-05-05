@@ -2,7 +2,7 @@
 A Java 2D game engine made with libGDX for school
 
 # Download
-You can download latest release [here](https://github.com/Timic3/skyward/releases/tag/1.0)
+You can download latest release [here](https://github.com/Timic3/skyward/releases/latest)
 
 # Source
 - Source code of game logic and other stuff is located in [core/src/com/timic/skywardgame](https://github.com/Timic3/skyward/tree/master/core/src/com/timic/skywardgame)
