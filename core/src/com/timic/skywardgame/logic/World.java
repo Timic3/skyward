@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector2;
 import com.timic.skywardgame.accounts.Accounts;
@@ -17,15 +18,22 @@ public class World {
 	
 	public final Hero hero;
 	public final List<Platform> platforms;
+	public final List<Enemy> enemies;
+	public final List<Beam> beams;
 	
 	public final Random seed;
 	
 	public int score;
 	public int maxHeight;
 	
+	private long fireDelay;
+	
 	public World() {
 		this.hero = new Hero(WORLD_WIDTH/2-Hero.HERO_WIDTH/2, 0);
 		this.platforms = new ArrayList<Platform>();
+		this.enemies = new ArrayList<Enemy>();
+		this.beams = new ArrayList<Beam>();
+		
 		seed = new Random();
 		
 		generateSky();
@@ -51,8 +59,17 @@ public class World {
 				acceleration = 0;
 		}
 		
+		if(Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isButtonPressed(Buttons.LEFT)) {
+			if(System.nanoTime()-fireDelay >= 600_000_000L) {
+				beams.add(new Beam(hero.position.x, hero.position.y+50));
+				fireDelay = System.nanoTime();
+			}
+		}
+		
 		updateHero(delta, acceleration);
 		updatePlatforms(delta);
+		updateEnemies(delta);
+		updateBeams(delta);
 		checkCollisions();
 		if(maxHeight-450 > hero.position.y) {
 			GameScreen.gameOver = true;
@@ -68,6 +85,11 @@ public class World {
 			
 			Platform platform = new Platform(x, y, type);
 			platforms.add(platform);
+			
+			if(y > 25 && seed.nextFloat() > 0.6f) {
+				Enemy enemy = new Enemy(platform.position.x, platform.position.y+Enemy.ENEMY_HEIGHT*3);
+				enemies.add(enemy);
+			}
 			
 			y += (maxJumpHeight);
 			y -= seed.nextFloat()*(maxJumpHeight/3);
@@ -93,8 +115,42 @@ public class World {
 		}
 	}
 	
+	private void updateEnemies(float delta) {
+		for(int i=0;i < enemies.size(); i++) {
+			Enemy enemy = enemies.get(i);
+			if(enemy.position.y > GameScreen.getRenderer().getCameraY()*2)
+				break;
+			enemy.update(delta);
+		}
+	}
+	
+	private void updateBeams(float delta) {
+		for(int i=0;i < beams.size(); i++) {
+			Beam beam = beams.get(i);
+			if(beam.position.y > GameScreen.getRenderer().getCameraY()*2)
+				break;
+			beam.update(delta);
+		}
+	}
+	
 	private void checkCollisions() {
 		checkPlatformCollisions();
+		checkEnemyCollisions();
+		checkBeamCollisions();
+	}
+	
+	private void checkEnemyCollisions() {
+		for(int i=0;i < enemies.size(); i++) {
+			Enemy enemy = enemies.get(i);
+			if(enemy.position.y < GameScreen.getRenderer().getCameraY()/2 && i != 0)
+				continue;
+			if(enemy.position.y > GameScreen.getRenderer().getCameraY()*2)
+				break;
+			if(hero.bounds.overlaps(enemy.bounds)) {
+				GameScreen.gameOver = true;
+				break;
+			}
+		}
 	}
 	
 	private void checkPlatformCollisions() {
@@ -115,8 +171,21 @@ public class World {
 		}
 	}
 	
-	public void dispose() {
-		
+	private void checkBeamCollisions() {
+		try {
+			for(int i=0;i < beams.size(); i++) {
+				for(int j=0;j < enemies.size(); j++) {
+					Beam beam = beams.get(i);
+					Enemy enemy = enemies.get(j);
+					if(beam.bounds.overlaps(enemy.bounds)) {
+						enemies.remove(j);
+						beams.remove(i);
+					}
+				}
+			}
+		} catch(IndexOutOfBoundsException e) {
+			
+		}
 	}
 	
 }

@@ -59,7 +59,7 @@ public class GameScreen extends ScreenBase {
 				updateRequired = false;
 				Accounts.updateScore(score);
 			}
-			if(Gdx.input.isKeyPressed(Keys.SPACE))
+			if(Gdx.input.isKeyPressed(Keys.ENTER) || Gdx.input.isKeyPressed(Keys.ESCAPE) || Gdx.input.isKeyPressed(Keys.SPACE))
 				game.setScreen(new LeaderboardScreen(game));
 		}
 		
@@ -78,7 +78,6 @@ public class GameScreen extends ScreenBase {
 		Gdx.app.debug("Skyward", "Disposing of game screen");
 		batch.dispose();
 		renderer.dispose();
-		world.dispose();
 		gameOver = false;
 		score = 0;
 		updateRequired = true;

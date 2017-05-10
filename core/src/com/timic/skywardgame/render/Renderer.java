@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.timic.skywardgame.logic.Assets;
+import com.timic.skywardgame.logic.Beam;
+import com.timic.skywardgame.logic.Enemy;
 import com.timic.skywardgame.logic.Hero;
 import com.timic.skywardgame.logic.Hero.State;
 import com.timic.skywardgame.logic.Platform;
@@ -45,6 +47,8 @@ public class Renderer {
 		batch.begin();
 		renderPlatforms();
 		renderHero();
+		renderEnemies();
+		renderBeams();
 		batch.end();
 	}
 	
@@ -68,6 +72,27 @@ public class Renderer {
 				break;
 			batch.draw(Assets.snowHalfLeft, platform.position.x, platform.position.y, Platform.PLATFORM_WIDTH, Platform.PLATFORM_HEIGHT);
 			batch.draw(Assets.snowHalfRight, platform.position.x+70, platform.position.y, Platform.PLATFORM_WIDTH, Platform.PLATFORM_HEIGHT);
+		}
+	}
+	
+	private void renderEnemies() {
+		for(int i=0;i < world.enemies.size(); i++) {
+			Enemy enemy = world.enemies.get(i);
+			if(enemy.position.y < camera.position.y/2 && i != 0)
+				continue;
+			if(enemy.position.y > camera.position.y*2)
+				break;
+			int side = enemy.facing == -1 ? Enemy.ENEMY_WIDTH : 0;
+			batch.draw(Assets.enemy, enemy.position.x+side, enemy.position.y, Enemy.ENEMY_WIDTH*enemy.facing, Enemy.ENEMY_HEIGHT);
+		}
+	}
+	
+	private void renderBeams() {
+		for(int i=0;i < world.beams.size(); i++) {
+			Beam beam = world.beams.get(i);
+			if(beam.position.y > camera.position.y*2)
+				world.beams.remove(i);
+			batch.draw(Assets.beam, beam.position.x, beam.position.y, Beam.BEAM_WIDTH, Beam.BEAM_HEIGHT);
 		}
 	}
 	

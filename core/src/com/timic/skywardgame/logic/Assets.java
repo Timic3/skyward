@@ -19,6 +19,10 @@ public class Assets {
 	public static TextureRegion snowHalfMid;
 	public static TextureRegion snowHalfRight;
 	
+	public static Texture enemy;
+	
+	public static Texture beam;
+	
 	public static BitmapFont font;
 	
 	public static Texture loadTexture(String file) {
@@ -36,6 +40,8 @@ public class Assets {
 		snowHalfLeft = new TextureRegion(tiles, 216, 576, 70, 70);
 		snowHalfMid = new TextureRegion(tiles, 216, 504, 70, 70);
 		snowHalfRight = new TextureRegion(tiles, 216, 432, 70, 70);
+		enemy = loadTexture("data/images/enemy_2.png");
+		beam = loadTexture("data/images/beam.png");
 		font = new BitmapFont(Gdx.files.internal("data/fonts/arial.fnt"), Gdx.files.internal("data/fonts/arial.png"), false);
 	}
 }

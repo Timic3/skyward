@@ -11,7 +11,7 @@ public class Platform extends Entity {
 		super(x, y, PLATFORM_WIDTH, PLATFORM_HEIGHT);
 		this.type = type;
 		if(type == 1)
-			velocity.x = PLATFORM_VELOCITY;
+			this.velocity.x = PLATFORM_VELOCITY+y/100;
 	}
 	
 	public void update(float delta) {
